@@ -110,13 +110,21 @@ func processLineType1(line string) (*SwimmerTime, error) {
 	// line: Lastname, Firstname  14 Lynchburg YMCA 2:14.96 2:16.72 AG 9
 	index2 := strings.Index(line, "   ")
 	index2Offset := 3
+
 	if index2 == -1 {
 		index2 = strings.Index(line, "  ")
 		if index2 == -1 {
 			return swimmer, fmt.Errorf("error while parsing swimmer name")
 		}
 		index2Offset = 2
+	} else {
+		index2b := strings.Index(line, "  ") // test whether we can't find a double space that is more on the left than a 3 double space
+		if index2b != -1 && index2b < index2 {
+			index2 = index2b
+			index2Offset = 2
+		}
 	}
+
 	swimmer.Name = line[0:index2]
 	line = line[index2+index2Offset:]
 	// line: 14 Lynchburg YMCA 2:14.96 2:16.72 AG 9
