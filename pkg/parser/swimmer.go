@@ -121,7 +121,7 @@ func processLineType1(line string) (*SwimmerTime, error) {
 	line = line[index2+index2Offset:]
 	// line: 14 Lynchburg YMCA 2:14.96 2:16.72 AG 9
 	index3 := strings.Index(line, " ")
-	if index1 == -1 {
+	if index3 == -1 {
 		return swimmer, fmt.Errorf("couldn't determine age")
 	}
 	swimmer.Age = line[0:index3]

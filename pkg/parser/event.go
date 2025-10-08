@@ -64,6 +64,7 @@ func processEventType2(line string) (*Event, error) {
 
 }
 func processEventType1(line string) (*Event, error) {
+	line = strings.ReplaceAll(line, "\t", " ")
 	event := &Event{
 		QualifyingTimes: make(map[string]string),
 	}
@@ -132,6 +133,9 @@ func parseStroke(stroke string) (string, bool, error) {
 		return "Backstroke", true, nil
 	}
 	if strings.HasPrefix(stroke, "Butterfly") {
+		return "Butterfly", false, nil
+	}
+	if strings.HasPrefix(stroke, "Butter ly") {
 		return "Butterfly", false, nil
 	}
 	if strings.HasPrefix(stroke, "Fly") {

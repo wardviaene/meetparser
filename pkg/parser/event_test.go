@@ -17,6 +17,7 @@ func TestProcessEventType1(t *testing.T) {
 		//
 		"#1  Girls 11-12 100 Yard Fly",
 		"#3  Girls 13&O 200 Yard Fly",
+		"Event	1		Girls	10	&	Under	200	Yard	IM",
 	}
 	expected := []Event{
 		{
@@ -72,6 +73,14 @@ func TestProcessEventType1(t *testing.T) {
 			AgeGroup: "13 & over",
 			Distance: "200 Yard",
 			Stroke:   "Fly",
+			Relay:    false,
+		},
+		{ //Event	1		Girls	10	&	Under	200	Yard	IM
+			Round:    "1",
+			Gender:   "girls",
+			AgeGroup: "10 & under",
+			Distance: "200 Yard",
+			Stroke:   "IM",
 			Relay:    false,
 		},
 	}

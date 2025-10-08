@@ -27,6 +27,8 @@ func TestProcessLineType1(t *testing.T) {
 		"36 Lastname, Firstname  17 Nation's Capital Swim Club J22.27",
 		"--- Lastname, Firstname  17 Occoquan Swimming DQ",
 		"1 Lastname, Firstname  14 Nation's Capital Swim Club 21.27 21.26 # q",
+		"1 Lastname, Firstname J  12 TFA-NT 1:58.97",
+		"1 Lastname, Firstname T  10 LAC-NT 28.03   20",
 	}
 	expected := []SwimmerTime{
 		{
@@ -203,6 +205,23 @@ func TestProcessLineType1(t *testing.T) {
 			Qualified: true,
 			NewRecord: true,
 			Age:       "14",
+		},
+		{ // "1 Lastname, Firstname J  12 TFA-NT 1:58.97",
+			Name:     "Lastname, Firstname J",
+			TeamName: "TFA",
+			TeamLSC:  "NT",
+			Time:     "1:58.97",
+			Place:    "1",
+			Age:      "12",
+		},
+		{ // "1 Lastname, Firstname T  10 LAC-NT 28.03   20",
+			Name:     "Lastname, Firstname T",
+			TeamName: "LAC",
+			TeamLSC:  "NT",
+			Time:     "28.03",
+			Place:    "1",
+			Age:      "10",
+			Points:   "20",
 		},
 	}
 

@@ -130,7 +130,7 @@ func parsePDFText(reader io.Reader) (Result, error) {
 			} else {
 				result.Events = append(result.Events, event)
 			}
-		} else if strings.Contains(line, "Name Age") || strings.Contains(line, "Name Ag  e") {
+		} else if strings.Contains(line, "Name Age") || strings.Contains(line, "Name Ag  e") || strings.Contains(line, "Name Ag\te") {
 			processIndividual = true
 		} else if strings.Contains(line, "Team  Relay") || (fileType == FILETYPE_TYPE2 && strings.Contains(line, "Pl Team Relay")) {
 			processIndividual = false
