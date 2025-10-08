@@ -130,7 +130,7 @@ func processRelayLineType1(line string) (*RelayTime, error) {
 	indexRelayLetter, relayTime.SeedTime, relayTime.Time, err = processTimes(line)
 	if err != nil {
 		fmt.Printf("Line: %s\n", line)
-		return relayTime, fmt.Errorf("process time erorr: %s", err)
+		return relayTime, fmt.Errorf("process time error: %s", err)
 	}
 
 	line = line[indexRelayLetter:]

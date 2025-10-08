@@ -8,6 +8,7 @@ import (
 
 var timesRegex = regexp.MustCompile(`(?:\d{1,2}:)?\d{2}\.\d{2}`)
 var timesNoSeed = regexp.MustCompile(` (?:\d{1,2}:)?\d{2}\.\d{2}`)
+var judgedTime = regexp.MustCompile(` ?J?(?:\d{1,2}:)?\d{2}\.\d{2}`)
 var timesNTRegex = regexp.MustCompile(`NT (?:\d{1,2}:)?\d{2}\.\d{2}`)
 var timesDQRegex = regexp.MustCompile(`(?:\d{1,2}:)?\d{2}\.\d{2}(?: [YLS])? DQ`)
 var timesNSRegex = regexp.MustCompile(`(?:\d{1,2}:)?\d{2}\.\d{2}(?: [YLS])? NS`)
@@ -30,6 +31,7 @@ func processTimes(line string) (int, string, string, error) {
 func getNoTimeCodes(line string, timesFound int) (int, string, string, error) {
 	if timesFound == 0 {
 		// line: Virginia Gators NT SCR
+		// line: Nation's Capital Swim Club DFS
 		indexAfterTeamName := strings.Index(line, "NT DQ")
 		if indexAfterTeamName != -1 {
 			return indexAfterTeamName, "NT", "DQ", nil
@@ -45,6 +47,18 @@ func getNoTimeCodes(line string, timesFound int) (int, string, string, error) {
 		indexAfterTeamName = strings.Index(line, "NT SCR")
 		if indexAfterTeamName != -1 {
 			return indexAfterTeamName, "NT", "SCR", nil
+		}
+		indexAfterTeamName = strings.Index(line, " DFS")
+		if indexAfterTeamName != -1 {
+			return indexAfterTeamName, "", "DFS", nil
+		}
+		indexAfterTeamName = strings.Index(line, " DQ")
+		if indexAfterTeamName != -1 {
+			return indexAfterTeamName, "", "DQ", nil
+		}
+		indexAfterTeamName = strings.Index(line, " DNF")
+		if indexAfterTeamName != -1 {
+			return indexAfterTeamName, "", "DNF", nil
 		}
 		return -1, "", "", fmt.Errorf("no codes recognized instead of times")
 	}
@@ -71,9 +85,16 @@ func getNoTimeCodes(line string, timesFound int) (int, string, string, error) {
 		}
 		// or no seed time:
 		// SJAC-MA 1:09.33
+
 		if matchedNoSeedTimes := timesNoSeed.FindStringIndex(line); matchedNoSeedTimes != nil {
 			return matchedNoSeedTimes[0], "", line[matchedNoSeedTimes[0]+1 : matchedNoSeedTimes[1]], nil
 		}
+		// or judged:
+		// J1:09.33
+		if matchedJudgedTimes := judgedTime.FindStringIndex(line); matchedJudgedTimes != nil {
+			return matchedJudgedTimes[0], "", line[matchedJudgedTimes[0]+1 : matchedJudgedTimes[1]], nil
+		}
+
 		return -1, "", "", fmt.Errorf("code not supported (found one time, but no DQ/NT/NS)")
 	}
 	return -1, "", "", fmt.Errorf("no codes recognized instead of times (too many elements supplied)")

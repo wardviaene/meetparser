@@ -23,6 +23,10 @@ func TestProcessLineType1(t *testing.T) {
 		"6 Lastname, Firstname O  14 Mansfield Aquatic Club-NT 10:43.41 Y 9:29.11 TAGS 13",
 		"17 Lastname, Firstname F  13 The Woodlands Swim Team-GU 10:49.69 Y 9:43.85 TAGS  ",
 		"1 Lastname, Firstname J  12 SJAC-MA 1:09.33",
+		"--- Lastname, Firstname  14 Nation's Capital Swim Club DFS",
+		"36 Lastname, Firstname  17 Nation's Capital Swim Club J22.27",
+		"--- Lastname, Firstname  17 Occoquan Swimming DQ",
+		"1 Lastname, Firstname  14 Nation's Capital Swim Club 21.27 21.26 # q",
 	}
 	expected := []SwimmerTime{
 		{
@@ -164,6 +168,41 @@ func TestProcessLineType1(t *testing.T) {
 			Time:     "1:09.33",
 			Place:    "1",
 			Age:      "12",
+		},
+		{ // --- Lastname, Firstname 14 Nation's Capital Swim Club DFS
+			Name:     "Lastname, Firstname",
+			TeamName: "Nation's Capital Swim Club",
+			TeamLSC:  "",
+			Time:     "DFS",
+			Place:    "---",
+			Age:      "14",
+		},
+		{ // --- 36 Lastname, Firstname  17 Nation's Capital Swim Club J22.27
+			Name:     "Lastname, Firstname",
+			TeamName: "Nation's Capital Swim Club",
+			TeamLSC:  "",
+			Time:     "J22.27",
+			Place:    "36",
+			Age:      "17",
+		},
+		{ // "--- Lastname, Firstname  17 Occoquan Swimming DQ"
+			Name:     "Lastname, Firstname",
+			TeamName: "Occoquan Swimming",
+			TeamLSC:  "",
+			Time:     "DQ",
+			Place:    "---",
+			Age:      "17",
+		},
+		{ // "1 Lastname, Firstname  14 Nation's Capital Swim Club 21.27 21.26 # q",
+			Name:      "Lastname, Firstname",
+			TeamName:  "Nation's Capital Swim Club",
+			TeamLSC:   "",
+			SeedTime:  "21.27",
+			Time:      "21.26",
+			Place:     "1",
+			Qualified: true,
+			NewRecord: true,
+			Age:       "14",
 		},
 	}
 

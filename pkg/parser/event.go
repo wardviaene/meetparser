@@ -7,6 +7,7 @@ import (
 )
 
 var ageRegex = regexp.MustCompile(`(?i)^(?:\d{1,2}\s*&\s*(?:Under|Over|O)|\d{1,2}\s*-\s*\d{1,2})`)
+var distanceRegex = regexp.MustCompile(`(?i)^(?:\d+\s*(?:LC|SC)?\s*Meter|\d+\s*(?:Yard|yd))\b`)
 
 func processEvent(line string, fileType string) (*Event, error) {
 	switch fileType {
@@ -213,35 +214,9 @@ func normalizeAge(s string) string {
 
 func parseEventDistance(data string) (string, error) {
 	// eventSplit[1]: 50 LC Meter Butterfly)
-	distances := []string{
-		"50 LC Meter",
-		"100 LC Meter",
-		"200 LC Meter",
-		"400 LC Meter",
-		"800 LC Meter",
-		"1500 LC Meter",
-		"25 Yard",
-		"50 Yard",
-		"100 Yard",
-		"200 Yard",
-		"400 Yard",
-		"500 Yard",
-		"800 Yard",
-		"1000 Yard",
-		"1500 Yard",
-		"25yd",
-		"50yd",
-		"100yd",
-		"200yd",
-		"400yd",
-		"800yd",
-		"1000yd",
-		"1500yd",
-	}
-	for _, distance := range distances {
-		if strings.HasPrefix(data, distance) {
-			return distance, nil
-		}
+	match := distanceRegex.FindString(data)
+	if match != "" {
+		return match, nil
 	}
 	return "", fmt.Errorf("can't extract distance from: %s", data)
 }

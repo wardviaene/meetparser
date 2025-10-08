@@ -176,7 +176,7 @@ func processLineType1(line string) (*SwimmerTime, error) {
 	line = strings.TrimSpace(line) // remove unnecessary spacing
 	qualifyingStandardsIndex := strings.LastIndex(line, " ")
 	if !timesRegex.MatchString(line[qualifyingStandardsIndex+1:]) {
-		if line[qualifyingStandardsIndex+1:] != "DQ" && line[qualifyingStandardsIndex+1:] != "NS" && line[qualifyingStandardsIndex+1:] != "DNF" && line[qualifyingStandardsIndex+1:] != "DFS" {
+		if line[qualifyingStandardsIndex+1:] != "DQ" && line[qualifyingStandardsIndex+1:] != "NS" && line[qualifyingStandardsIndex+1:] != "DNF" && line[qualifyingStandardsIndex+1:] != "DFS" && line[qualifyingStandardsIndex+1:] != "q" {
 			swimmer.QualifyingStandards = line[qualifyingStandardsIndex+1:]
 			line = line[0:qualifyingStandardsIndex]
 		}
@@ -189,6 +189,16 @@ func processLineType1(line string) (*SwimmerTime, error) {
 	if strings.HasPrefix(line[seedTagIndex+1:], "Y ") || strings.HasPrefix(line[seedTagIndex+1:], "S ") || strings.HasPrefix(line[seedTagIndex+1:], "L ") {
 		swimmer.SeedTimeTag = line[seedTagIndex+1 : seedTagIndex+2]
 		line = line[0:seedTagIndex+1] + line[seedTagIndex+3:]
+	}
+
+	if strings.HasSuffix(line, " q") {
+		swimmer.Qualified = true
+		line = line[0 : len(line)-2]
+	}
+
+	if strings.HasSuffix(line, " #") {
+		swimmer.NewRecord = true
+		line = line[0 : len(line)-2]
 	}
 
 	err = checkResidual(line)
@@ -242,7 +252,8 @@ func checkResidual(residual string) error {
 	if len(split) != 2 && len(split) != 1 {
 		return fmt.Errorf("zero parts or more than 2 parts found: '%s'", residual)
 	}
-	if !timesRegex.MatchString(split[0]) && split[0] != "NT" {
+
+	if !timesRegex.MatchString(split[0]) && split[0] != "NT" && residual != "DFS" && residual != "DQ" && residual != "DNF" {
 		return fmt.Errorf("unknown value (first part): '%s'", split[0])
 	}
 	if len(split) >= 2 {

@@ -56,6 +56,8 @@ type SwimmerTime struct {
 	SeedTimeTag         string   `json:"seedTimeTag"`
 	Points              string   `json:"points"`
 	QualifyingStandards string   `json:"qualifyingStandards"`
+	Qualified           bool     `json:"qualified,omitempty"`
+	NewRecord           bool     `json:"newRecord,omitempty"`
 	Achievements        string   `json:"achievements,omitempty"`
 	SplitTimes          []string `json:"splitTimes,omitempty"`
 }
