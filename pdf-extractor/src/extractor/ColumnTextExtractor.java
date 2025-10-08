@@ -34,9 +34,15 @@ public class ColumnTextExtractor {
             stripper.setStartPage(1);
             stripper.setEndPage(1);
             String firstPageText = stripper.getText(document);
-
-            boolean isTwoColumn = firstPageText.contains("SwimTopia Meet Maestro");
+            boolean isTwoColumn = false;
             boolean isThreeColumn = false;
+            String fileType = "";
+
+            if(firstPageText.contains("SwimTopia Meet Maestro")) {
+                isTwoColumn = true;
+                fileType = "SwimTopia Meet Maestro";
+            }
+
             List<Float> verticalLines = null;
             // --- Step 2: inspect columns
             if(!isTwoColumn && document.getNumberOfPages() > 0) {
@@ -48,23 +54,35 @@ public class ColumnTextExtractor {
                 }
                 if(verticalLines != null && verticalLines.size() == 3) {
                     isThreeColumn = true;
+                } else if(verticalLines != null && verticalLines.size() == 1) {
+                    isTwoColumn = true;
                 }
             }
 
             StringBuilder extracted = new StringBuilder();
 
             if (isTwoColumn) {
-                extracted.append("FileType: SwimTopia Meet Maestro\n");
+                if(!fileType.equals("")) {
+                    extracted.append("FileType: SwimTopia Meet Maestro\n");
+                }
+                
+                
                 // --- Step 2a: Two-column extraction ---
                 for (PDPage page : document.getPages()) {
                     float width = page.getMediaBox().getWidth();
                     float height = page.getMediaBox().getHeight();
 
+                    float cutoff = width / 2;
+
+                    if(verticalLines.size() == 1) {
+                        cutoff = verticalLines.get(0);
+                    }
+
                     PDFTextStripperByArea areaStripper = new PDFTextStripperByArea();
                     areaStripper.setSortByPosition(true);
 
-                    Rectangle left = new Rectangle(0, 0, (int)(width / 2), (int) height);
-                    Rectangle right = new Rectangle((int)(width / 2), 0, (int)(width / 2), (int) height);
+                    Rectangle left = new Rectangle(0, 0, (int)cutoff, (int) height);
+                    Rectangle right = new Rectangle((int)cutoff, 0, (int)cutoff, (int) height);
 
                     areaStripper.addRegion("left", left);
                     areaStripper.addRegion("right", right);

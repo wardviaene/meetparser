@@ -68,6 +68,22 @@ public class VerticalLineDetector {
                         hasLastPoint = false;
                     }
                 }
+            } else if (token.equals("re")) { // rectangle
+                if (i >= 4) {
+                    try {
+                        float x = Float.parseFloat(tokens.get(i - 4));
+                        float y = Float.parseFloat(tokens.get(i - 3));
+                        float w = Float.parseFloat(tokens.get(i - 2));
+                        float h = Float.parseFloat(tokens.get(i - 1));
+
+                        // very thin rectangle
+                        if (w < 1.0 && h >= minLineHeight) {
+                            verticalSegments.put(x, verticalSegments.getOrDefault(x, 0f) + h);
+                        }
+                    } catch (NumberFormatException e) {
+                        // ignore malformed tokens
+                    }
+                }
             } else if (token.equals("l") && hasLastPoint) { // lineTo
                 if (i >= 2) {
                     try {
